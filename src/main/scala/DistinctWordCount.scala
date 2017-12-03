@@ -37,7 +37,7 @@ object DistinctWordCount {
       out.collect(s"Distinct elements: $discount")
     }
 
-    class DiscountWindowFunction extends WindowFunction[WordWithCount, String, String, TimeWindow] {
+    class DistinctCountWindowFunction extends WindowFunction[WordWithCount, String, String, TimeWindow] {
       def apply(key: String, window: TimeWindow, input: Iterable[WordWithCount], out: Collector[String]): Unit = {
         val discount = input.map(t => t.word).toSet.size
         out.collect(s"Distinct elements: $discount")
@@ -45,7 +45,7 @@ object DistinctWordCount {
     }
 
     // val distinctCountStream: DataStream[String] = windowCounts.apply { distinctCount _ } // compiles
-    val distinctCountStream = windowCounts.apply(new DiscountWindowFunction())
+    val distinctCountStream = windowCounts.apply(new DistinctCountWindowFunction())
 
     distinctCountStream.print().setParallelism(1)
 
